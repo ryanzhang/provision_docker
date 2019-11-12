@@ -16,7 +16,7 @@
         groups:
           - group2
       - name: provision_docker_host_four
-        image: "chrismeyers/centos7"
+        image: "ryanzhangcheng/centos7"
   roles:
     - { role: provision_docker, provision_docker_privileged: "{{ true }}", provision_docker_inventory: "{{ inventory }}" }
 

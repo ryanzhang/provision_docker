@@ -1,10 +1,15 @@
-FROM centos:centos7
+FROM registry.access.redhat.com/rhel7.6
+
+# ARG yum_server=http://192.168.2.107:81
+# ENV env_yum_server=$yum_server
 ENV container docker
+
+ADD rhel-base.repo /etc/yum.repos.d/rhel-base.repo
+#RUN sed -i "s/your_yum_server/${env_yum_server}/g" /etc/yum.repos.d/rhel-base.repo
 
 RUN yum -y update; yum clean all
 
-RUN yum -y swap -- remove systemd-container systemd-container-libs -- install systemd systemd-libs dbus fsck.ext4
-
+# RUN yum -y swap -- remove systemd-container systemd-container-libs -- install systemd systemd-libs dbus fsck.ext4
 # RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
 #     systemd-remount-fs.service sys-kernel-config.mount \
 #     sys-kernel-debug.mount sys-fs-fuse-connections.mount \
@@ -21,17 +26,17 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-RUN yum -y install openssh-server sudo openssh-clients
+RUN yum -y install openssh-server sudo openssh-clients iproute
 RUN sed -i 's/#PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN ssh-keygen -q -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa && \
     ssh-keygen -q -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa && \
     ssh-keygen -q -f /etc/ssh/ssh_host_ed25519_key -N '' -t ed25519
-RUN echo 'root:docker.io' | chpasswd
+RUN echo 'root:redhat' | chpasswd
 RUN systemctl enable sshd.service
 
 # firewalld needs this .. and I needs my firewalld
-# ADD dbus.service /etc/systemd/system/dbus.service
-# RUN systemctl enable dbus.service
+ADD dbus.service /etc/systemd/system/dbus.service
+RUN systemctl enable dbus.service
 
 VOLUME [ "/sys/fs/cgroup" ]
 VOLUME ["/run"]

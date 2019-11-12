@@ -4,13 +4,13 @@
   vars:
     inventory:
       - name: provision_docker_host_one
-        image: "chrismeyers/centos7"
+        image: "ryanzhangcheng/centos7"
         provision_docker_volumes: "/data"
       - name: provision_docker_host_two
-        image: "chrismeyers/centos7"
+        image: "ryanzhangcheng/centos7"
         provision_docker_volumes_from: provision_docker_host_one
       - name: provision_docker_host_three
-        image: "chrismeyers/centos7"
+        image: "ryanzhangcheng/centos7"
   roles:
     - role: provision_docker
       provision_docker_inventory: "{{ inventory }}"
