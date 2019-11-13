@@ -9,7 +9,7 @@ before_install:
 
 install:
   - sudo apt-get install sshpass
-  - pip install docker-py
+  - pip install docker-py docker
   - pip install ansible
   - ansible --version
 

@@ -21,10 +21,10 @@
   with_items: "{{ provision_docker_inventory_group }}"
 
 - name: Get IP of container
-  local_action:
-    module: "command"
+  command:
     args: "docker inspect --format '{{ '{{' }} .NetworkSettings.IPAddress {{ '}}' }}' {{ item }}"
   register: provision_docker_ip
+  delegate_to: localhost
   with_items: "{{ provision_docker_inventory_group }}"
   changed_when: false
 
@@ -36,6 +36,15 @@
         ansible_ssh_pass: "{{ hostvars[item.1]['ansible_ssh_pass']|default(provision_docker_ssh_pass) }}"
       delegate_to: "{{ item.1 }}"
       delegate_facts: True
+      with_indexed_items: "{{ provision_docker_inventory_group }}"
+      changed_when: false
+    - name: "Set ip address with /tmp/hosts"
+      lineinfile:
+        path: /tmp/hosts
+        line: "{{ provision_docker_ip.results[item.0].stdout }} {{item.0}} {{item.1}}"
+        state: present
+      # delegate_to: "localhost"
+      # delegate_facts: True
       with_indexed_items: "{{ provision_docker_inventory_group }}"
       changed_when: false
 

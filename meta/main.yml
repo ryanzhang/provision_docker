@@ -3,7 +3,7 @@ galaxy_info:
   author: Chris Meyers
   description: Provision docker containers using inventory.
   company: Ansible
-  license: license (GPLv2, CC-BY, etc)
+  license: Apache License 2
   min_ansible_version: 2.4
   #
   # Below are all platforms currently available. Just uncomment
